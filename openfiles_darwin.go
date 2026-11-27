@@ -27,7 +27,8 @@ func raise() (Limit, Limit, error) {
 	if before.Soft >= target {
 		return before, before, nil
 	}
-	if err := unix.Setrlimit(unix.RLIMIT_NOFILE, &unix.Rlimit{Cur: target, Max: before.Hard}); err != nil {
+	raised := &unix.Rlimit{Cur: target, Max: before.Hard}
+	if err := unix.Setrlimit(unix.RLIMIT_NOFILE, raised); err != nil {
 		return before, before, err
 	}
 	after, err := current()

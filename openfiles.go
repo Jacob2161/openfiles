@@ -4,7 +4,8 @@
 // The soft limit is often 1,024, which caps a server that keeps a few
 // descriptors per connection, open database, or transfer long before memory
 // does. Raise lifts the soft limit to the hard one, within macOS's
-// kern.maxfilesperproc. ItemsAllowed and Spare then say how much the limit allows.
+// kern.maxfilesperproc. ItemsAllowed and Spare then say how much the limit
+// allows.
 //
 // On systems without RLIMIT_NOFILE, such as Windows, Current and Raise return
 // ErrUnsupported.
@@ -24,10 +25,11 @@ const DefaultHeadroom = 512
 // ErrUnsupported means the system has no RLIMIT_NOFILE.
 var ErrUnsupported = errors.New("RLIMIT_NOFILE is not supported on " + runtime.GOOS)
 
-// Limit is the process's open file limit. Soft is the limit in force; Hard is
-// the most an unprivileged process may raise it to.
+// Limit is the process's open file limit, in descriptors.
 type Limit struct {
+	// Soft is the limit in force.
 	Soft uint64
+	// Hard is the most an unprivileged process may raise Soft to.
 	Hard uint64
 }
 

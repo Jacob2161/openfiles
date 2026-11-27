@@ -21,11 +21,23 @@ func TestItemsAllowed(t *testing.T) {
 		{Limit{Soft: 256}, 5, 512, 1, "below the headroom still allows one"},
 		{Limit{Soft: 1024}, 0, 0, 1024, "a zero count counts one"},
 		{Limit{}, 5, 512, 1, "a zero soft limit still allows one"},
-		{Limit{Soft: math.MaxUint64}, 5, 512, math.MaxInt, "an unlimited soft limit allows any number"},
+		{
+			Limit{Soft: math.MaxUint64},
+			5,
+			512,
+			math.MaxInt,
+			"an unlimited soft limit allows any number",
+		},
 		{Limit{Soft: 1 << 32}, 4, 0, 1 << 30, "a large limit divides before it is clamped"},
 	} {
-		if got := allowedCase.limit.ItemsAllowed(allowedCase.perItem, allowedCase.headroom); got != allowedCase.want {
-			t.Errorf("%s: ItemsAllowed = %d, want %d", allowedCase.description, got, allowedCase.want)
+		got := allowedCase.limit.ItemsAllowed(allowedCase.perItem, allowedCase.headroom)
+		if got != allowedCase.want {
+			t.Errorf(
+				"%s: ItemsAllowed = %d, want %d",
+				allowedCase.description,
+				got,
+				allowedCase.want,
+			)
 		}
 	}
 }
@@ -39,7 +51,7 @@ func TestSpare(t *testing.T) {
 		t.Fatalf("Spare past the limit = %d, want 0", got)
 	}
 	if got := (Limit{Soft: math.MaxUint64}).Spare(0, 0); got != math.MaxInt {
-		t.Fatalf("Spare of an unlimited soft limit = %d", got)
+		t.Fatalf("Spare of an unlimited soft limit = %d, want %d", got, math.MaxInt)
 	}
 	if got := (Limit{}).Spare(0, 0); got != 0 {
 		t.Fatalf("Spare of a zero soft limit = %d, want 0", got)
@@ -51,7 +63,7 @@ func TestRaise(t *testing.T) {
 	before, after, err := Raise()
 	if runtime.GOOS == "windows" {
 		if !errors.Is(err, ErrUnsupported) {
-			t.Fatalf("Raise on Windows: %v", err)
+			t.Fatalf("Raise on Windows = %v, want ErrUnsupported", err)
 		}
 		return
 	}
@@ -59,10 +71,14 @@ func TestRaise(t *testing.T) {
 		t.Logf("raising failed, as it may in a sandbox: %v", err)
 	}
 	if after.Soft < before.Soft || after.Hard != before.Hard {
-		t.Fatalf("Raise went from %+v to %+v", before, after)
+		t.Fatalf(
+			"Raise went from %+v to %+v, want the same hard limit and no lower soft one",
+			before,
+			after,
+		)
 	}
 	current, err := Current()
 	if err != nil || current != after {
-		t.Fatalf("Current = %+v, %v; Raise left %+v", current, err, after)
+		t.Fatalf("Current = %+v, %v; want %+v, what Raise left", current, err, after)
 	}
 }

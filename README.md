@@ -2,7 +2,8 @@
 
 [![Go Reference](https://pkg.go.dev/badge/github.com/jacob2161/openfiles.svg)](https://pkg.go.dev/github.com/jacob2161/openfiles)
 
-Raise the process's open file limit (RLIMIT_NOFILE) to what the system allows, including macOS's per-process cap, and size concurrency to fit under it.
+Raise the process's open file limit (RLIMIT_NOFILE) to what the system allows, including macOS's
+per-process cap, and size concurrency to fit under it.
 
 ```bash
 go get github.com/jacob2161/openfiles
