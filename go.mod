@@ -1,5 +1,7 @@
 module github.com/jacob2161/openfiles
 
-go 1.26.0
+go 1.27
+
+toolchain go1.27.4
 
 require golang.org/x/sys v0.50.0
