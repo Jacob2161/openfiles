@@ -28,4 +28,4 @@ connections := limit.Spare(openDatabases*5, openfiles.DefaultHeadroom)
   limit (RLIM_INFINITY) allows any number.
 - On Windows, `Current` and `Raise` return `ErrUnsupported`.
 
-Tested on the two newest Go releases. Licensed under the MIT license.
+Requires Go 1.27. Licensed under the MIT license.
